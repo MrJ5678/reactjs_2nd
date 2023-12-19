@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="./react.development.js"></script>
+    <script src="./react-dom.development.js"></script>
+    <script src="./babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      let UserContext = React.createContext({});
+
+      class App extends React.Component {
+        render() {
+          return (
+            <div>
+              <UserContext.Provider value={{ x: 1, y: 2 }}>
+                <Test />
+                <Bar />
+              </UserContext.Provider>
+            </div>
+          );
+        }
+      }
+
+      class Test extends React.Component {
+        render() {
+          return <Foo />;
+        }
+      }
+
+      class Foo extends React.Component {
+        render() {
+          return (
+            <div>
+              <UserContext.Consumer>
+                {userCtxVal => (
+                  <span>
+                    x: {userCtxVal.x}; y: {userCtxVal.y}
+                  </span>
+                )}
+              </UserContext.Consumer>
+            </div>
+          );
+        }
+      }
+
+      class Bar extends React.Component {
+        static contextType = UserContext;
+
+        render() {
+          return (
+            <div>
+              <span>{this.context.x}</span>
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+  </body>
+</html>

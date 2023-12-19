@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="./react.development.js"></script>
+    <script src="./react-dom.development.js"></script>
+    <script src="./babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class VirtualList extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            children: []
+          };
+          this.elCount = Math.ceil(props.height / props.rowHeight) + 1;
+        }
+
+        handleScroll = e => {
+          var scrollTop = e?.target.scrollTop || 0;
+          var startElIdx = Math.floor(scrollTop / this.props.rowHeight);
+
+          var children = [];
+
+          for (
+            let i = startElIdx;
+            i < startElIdx + this.elCount && i < this.props.rowCount;
+            i++
+          ) {
+            var child = this.props.rowRender({
+              key: String(i),
+              index: i,
+              style: {
+                position: 'absolute',
+                top: i * this.props.rowHeight,
+                left: 0,
+                right: 0,
+                height: this.props.rowHeight
+              }
+            });
+            children.push(child);
+          }
+          this.setState({ children: children });
+        };
+        componentDidMount() {
+          this.handleScroll();
+        }
+        render() {
+          return (
+            <div
+              className="border"
+              onScroll={this.handleScroll}
+              style={{
+                overflow: 'auto',
+                width: this.props.width,
+                height: this.props.height,
+                border: '1px solid black'
+              }}
+            >
+              <div
+                className="inner-wrapper"
+                style={{
+                  position: 'relative',
+                  height: this.props.rowHeight * this.props.rowCount
+                }}
+              >
+                {this.state.children}
+              </div>
+            </div>
+          );
+        }
+      }
+
+      let list = [
+        'foo',
+        'bar',
+        'Lorem',
+        'ipsum',
+        'dolor',
+        'sit',
+        'amet',
+        'consectetur',
+        'adipisicing',
+        'elit',
+        'Sunt',
+        'fugiat',
+        'Optio',
+        'ullam',
+        'temporibus',
+        'deleniti',
+        'ut',
+        'ab',
+        'natus'
+      ];
+
+      function render({ key, index, isScrolling, isVisible, style }) {
+        return (
+          <div key={key} style={style}>
+            {list[index]}
+          </div>
+        );
+      }
+      ReactDOM.render(
+        <VirtualList
+          width={300}
+          height={300}
+          rowHeight={30}
+          rowCount={list.length}
+          rowRender={render}
+        />,
+        document.getElementById('root')
+      );
+    </script>
+  </body>
+</html>

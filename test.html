@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="./react.development.js"></script>
+    <script src="./react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
+    <script src="./babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="xtext/babel">
+      class Test extends React.Component {
+        handleClick = (e, num) => {
+          console.log(e, num);
+        };
+        render() {
+          try {
+            Promise.rrerso();
+          } catch (error) {}
+          return <div onClick={e => this.handleClick(e, 2)}>div text</div>;
+        }
+      }
+      ReactDOM.render(<Test />, document.getElementById('root'));
+    </script>
+    <script type="x">
+      let p = new Promise(resolve => {
+        if (document.readyState) {
+          resolve('document readyState...');
+          return;
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+          resolve('DOMContentLoaded...');
+        });
+      });
+      p.then(res => {
+        console.log('first promise output: ' + res);
+        return res;
+      })
+        .then(res => {
+          console.log('second promise output: ' + res);
+        })
+        .finally(res => {
+          console.log('finally output: ' + res);
+        });
+    </script>
+    <script type="x">
+      let startTime = new Date();
+      let count = 0;
+      let p = Promise.resolve();
+      // while (new Date() - startTime <= 1000) {
+      //   count++;
+      // }
+      // console.log(count);
+      while (new Date() - startTime <= 1000) {
+        p = p.then(() => {
+          count++;
+        });
+      }
+    </script>
+    <script type="x">
+      function timeOut(time) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(8);
+          }, time);
+        });
+      }
+      let p = Promise.resolve();
+      p.then(() => {
+        return timeOut(5000);
+      }).then(res => {
+        console.log(res);
+      });
+    </script>
+    <script type="x">
+      let a = { x: 1, y: 2 };
+      const b = { m: 3, n: 4 };
+      abc;
+    </script>
+    <script type="x">
+      window.onload = function () {
+        let html = document.querySelector('html');
+        let w = window.innerWidth;
+        html.style.fontSize = `${(w / 720) * 100}px`;
+      };
+    </script>
+  </body>
+</html>

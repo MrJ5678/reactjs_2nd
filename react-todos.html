@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="./react.development.js"></script>
+    <script src="./react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
+    <script src="./babel.min.js"></script>
+    <style>
+      ul.active li:not(.active),
+      ul.completed li:not(.completed) {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class Todo extends React.Component {
+        state = {
+          category: 'all',
+          todos: [
+            {
+              content: 'eat',
+              done: false
+            },
+            {
+              content: 'drink',
+              done: false
+            },
+            {
+              content: 'sleep',
+              done: true
+            }
+          ]
+        };
+
+        handleCategoryChange = e => {
+          this.setState({
+            category: e.target.value
+          });
+        };
+
+        isAllDone = () => {
+          return this.state.todos.every(it => it.done);
+        };
+
+        leftCount = () => {
+          return this.state.todos.filter(it => !it.done).length;
+        };
+
+        hasCompleted = () => {
+          return this.state.todos.some(it => it.done);
+        };
+
+        handleCheckAll = () => {
+          let targetStatus = true;
+          if (this.isAllDone()) {
+            targetStatus = false;
+          }
+          this.setState({
+            todos: this.state.todos.map(todo => {
+              if (todo.done === targetStatus) {
+                return todo;
+              } else {
+                return {
+                  ...todo,
+                  done: targetStatus
+                };
+              }
+            })
+          });
+        };
+
+        toggleTodoStatus = (_, idx) => {
+          this.setState({
+            todos: this.state.todos.map((todo, index) => {
+              if (index !== idx) {
+                return todo;
+              } else {
+                return {
+                  ...todo,
+                  done: !todo.done
+                };
+              }
+            })
+          });
+        };
+
+        deleteTodo = idx => {
+          this.setState({
+            todos: this.state.todos.filter((_, index) => idx !== index)
+          });
+        };
+
+        addTodo = e => {
+          if (e.key == 'Enter') {
+            let text = e.target.value.trim();
+            if (text) {
+              let todo = {
+                content: text,
+                done: false
+              };
+              this.setState({
+                todos: [...this.state.todos, todo]
+              });
+            }
+            e.target.value = '';
+          }
+        };
+        getTodoClass = todo => {
+          return todo.done ? 'completed' : 'active';
+        };
+        render() {
+          return (
+            <div>
+              <h1>Todos</h1>
+              <div>
+                <input
+                  type="checkbox"
+                  checked={this.isAllDone()}
+                  onChange={this.handleCheckAll}
+                />
+                <input type="text" onKeyUp={this.addTodo} />
+              </div>
+              <ul className={this.state.category}>
+                {this.state.todos.map((todo, idx) => (
+                  <li key={idx} className={this.getTodoClass(todo)}>
+                    <input
+                      type="checkbox"
+                      checked={todo.done}
+                      onChange={e => this.toggleTodoStatus(e, idx)}
+                    />
+                    <span>{todo.content}</span>
+                    <button onClick={() => this.deleteTodo(idx)}>
+                      &times;
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <div>{this.leftCount()} items left</div>
+              <div>
+                <label>
+                  <input
+                    type="radio"
+                    checked={this.state.category === 'all'}
+                    onChange={this.handleCategoryChange}
+                    value="all"
+                  />{' '}
+                  All
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    checked={this.state.category === 'active'}
+                    onChange={this.handleCategoryChange}
+                    value="active"
+                  />{' '}
+                  Active
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    checked={this.state.category === 'completed'}
+                    onChange={this.handleCategoryChange}
+                    value="completed"
+                  />{' '}
+                  Completed
+                </label>
+              </div>
+              {this.hasCompleted() && <button>Clear Completed</button>}
+            </div>
+          );
+        }
+      }
+      ReactDOM.render(<Todo />, document.getElementById('root'));
+    </script>
+  </body>
+</html>
